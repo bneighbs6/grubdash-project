@@ -12,10 +12,26 @@ const nextId = require("../utils/nextId");
 
 // CRUDLE Functions
 
+// Creates a new order and adds to orders array
+function create(req, res) {
+    const { data: { id, deliverTo, mobileNumber, status, dishes } = {} } = req.body; 
+    const newOrder = {
+        id: nextId(),
+        deliverTo,
+        mobileNumber,
+        status,
+        dishes,
+    }
+    orders.push(newOrder);
+    res.status(201).json({ data: newOrder });
+}
+
+// Lists the orders data
 function list(req, res) {
     res.json({ data: orders });
 }
 
 module.exports = {
+    create,
     list,
 }
