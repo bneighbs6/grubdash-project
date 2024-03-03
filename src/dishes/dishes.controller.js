@@ -9,6 +9,25 @@ const nextId = require("../utils/nextId");
 // TODO: Implement the /dishes handlers needed to make the tests pass
 
 // Middleware Functions
+// Verify name exists and isn't empty
+function hasName (req, res, next) {
+
+}
+
+// Verify Description exists and isn't empty
+function hasDescription(req, res, next) {
+
+}
+
+// Verify price exists and isn't empty
+function hasPrice(req, res, next) {
+
+}
+
+// Verify image_url exists and isn't empty
+function hasImage(req, res, next) {
+    
+}
 
 // CRUDL Functions
 
