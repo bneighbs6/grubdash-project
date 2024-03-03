@@ -49,7 +49,14 @@ function hasPrice(req, res, next) {
 
 // Verify image_url exists and isn't empty
 function hasImage(req, res, next) {
-
+    const { data: { image_url } = {} } = req.body; 
+    if (!image_url) {
+        next({
+            status: 400,
+            message: "Description must include an image_url"
+        });
+    }
+    return next(); 
 }
 
 // CRUDL Functions
@@ -72,6 +79,6 @@ function list(req, res) {
 }
 
 module.exports = {
-    create: [hasName, hasDescription, hasPrice, create],
+    create: [hasName, hasDescription, hasPrice, hasImage, create],
     list, 
 }
