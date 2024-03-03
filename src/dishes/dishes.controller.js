@@ -59,6 +59,7 @@ function hasImage(req, res, next) {
 
 // CRUDL Functions
 
+// Creates a new dish
 function create(req, res) {
     const { data: { id, name, description, price, image_url } = {} } = req.body; 
     const newDish = {
@@ -72,6 +73,7 @@ function create(req, res) {
     res.status(201).json({ data: newDish });
 }
 
+// Lists the dishes data
 function list(req, res) {
     res.json({ data: dishes });
 }

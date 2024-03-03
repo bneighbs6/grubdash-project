@@ -64,6 +64,7 @@ function orderExists(req, res, next) {
 // CRUDLE Functions
 
 // Creates a new order and adds to orders array
+// Ran with PUT request
 function create(req, res) {
     const { data: { id, deliverTo, mobileNumber, status, dishes } = {} } = req.body; 
     const newOrder = {
@@ -77,11 +78,14 @@ function create(req, res) {
     res.status(201).json({ data: newOrder });
 }
 
+// Reads data res.locals.order 
+// Ran with GET request
 function read(req, res) {
     res.json({ data: res.locals.order });
   }
 
 // Lists the orders data
+// Ran with GET request
 function list(req, res) {
     res.json({ data: orders });
 }
