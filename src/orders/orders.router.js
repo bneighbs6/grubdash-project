@@ -4,7 +4,9 @@ const controller = require("./orders.controller")
 // TODO: Implement the /orders routes needed to make the tests pass
 
 //New route for "/:orderId"
-router.route("/:orderId").get(controller.read);
+router.route("/:orderId")
+.get(controller.read)
+.delete(controller.delete)
 
 // New route for "/"
 router.route("/")

@@ -84,6 +84,15 @@ function read(req, res) {
     res.json({ data: res.locals.order });
   }
 
+// Deletes an order
+// Ran with DELETE request
+function destroy(req, res) {
+    const { orderId } = req.params;
+    const orderIndex = orders.findIndex((order) => order.id === Number(orderId));
+    deletedOrder = orders.splice(orderIndex, 1);
+    res.sendStatus(204);
+}
+
 // Lists the orders data
 // Ran with GET request
 function list(req, res) {
@@ -93,5 +102,6 @@ function list(req, res) {
 module.exports = {
     create: [hasDeliverTo, hasMobileNumber, hasDishes, create],
     read: [orderExists, read],
+    delete: [orderExists, destroy],
     list,
 }
