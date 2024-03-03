@@ -51,19 +51,19 @@ function dishesHasQuantity(req, res, next) {
     const { data: { dishes } = {} } = req.body;
     // Checks if dishes array exists and is not empty
     if (!dishes || !dishes.length || !Array.isArray(dishes)) {
-        next({
-            status: 400,
-            message: "Order must include at least one dish"
+        return next({
+          status: 400,
+          message: "Order must include at least one dish",
         });
-    }
+      }
     // Defines invalidDishes array
     // Filters dishes that do not exist, or are less than 0
-    const invalidDishes = dishes.filter((dish) => {
-        if (!dish.quantity || dish.quantity < 0 || !Number.isInteger(dish.quantity)) {
-            return true; 
+    const invalidDishes = dishes.filter((dish, index) => {
+        if (!dish.hasOwnProperty('quantity') || !Number.isInteger(dish.quantity) || dish.quantity <= 0) {
+          return true;
         }
-        return false; 
-    });
+        return false;
+      });
     // If invalidDishes array contains ANY length, return error status & message
     if (invalidDishes.length > 0) {
         const errorMessage = invalidDishes.map((dish, index) => {
