@@ -38,7 +38,7 @@ function hasDescription(req, res, next) {
 // Verify price exists and isn't empty
 function hasPrice(req, res, next) {
     const { data: { price } = {} } = req.body; 
-    if (!price) {
+    if (!price || price < 0) {
         next({
             status: 400,
             message: "Dish must include a price"
