@@ -10,6 +10,21 @@ const nextId = require("../utils/nextId");
 
 // Middleware Functions
 
+// Verify deliverTo exists and isn't empty
+function hasDeliverTo(req, res, next) {
+
+}
+
+// Verify mobile number exists and isn't empty
+function hasMobileNumber(req, res, next) {
+
+}
+
+// Verify dishes exists, isn't empty, and is an array
+function hasDishes(req, res, next) {
+    
+} 
+
 // CRUDLE Functions
 
 // Creates a new order and adds to orders array
