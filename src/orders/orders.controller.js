@@ -46,6 +46,18 @@ function hasDishes(req, res, next) {
     return next(); 
 } 
 
+function hasValidStatus(req, res, next) {
+    const { orderId } = req.params;
+    const foundOrder = orders.find((order) => order.id === orderId);
+    if (foundOrder.status === "pending") {
+        return next();
+    }
+    next({
+        status: 400,
+        message: "An order cannot be deleted unless it is pending. Returns a 400 status code"
+    })
+}
+
 // Verifies order exists
 function orderExists(req, res, next) {
     const { orderId } = req.params;
@@ -102,6 +114,6 @@ function list(req, res) {
 module.exports = {
     create: [hasDeliverTo, hasMobileNumber, hasDishes, create],
     read: [orderExists, read],
-    delete: [orderExists, destroy],
+    delete: [orderExists, hasValidStatus, destroy],
     list,
 }
