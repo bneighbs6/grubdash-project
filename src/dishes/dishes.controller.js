@@ -18,8 +18,6 @@ function hasName (req, res, next) {
             message: "Dish must include a name"
         })
     }
-    // This line passes the name data to the locals body for next midware/error handler to handle
-    res.locals.body = name; 
     return next()
 }
 

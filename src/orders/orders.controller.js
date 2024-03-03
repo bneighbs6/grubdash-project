@@ -12,7 +12,14 @@ const nextId = require("../utils/nextId");
 
 // Verify deliverTo exists and isn't empty
 function hasDeliverTo(req, res, next) {
-
+    const { data: { deliverTo } = {} } = req.body; 
+    if (!deliverTo) {
+        next({
+            status: 400,
+            message: "Order must include a deliverTo"
+        });
+    }
+    return next(); 
 }
 
 // Verify mobile number exists and isn't empty
@@ -22,7 +29,7 @@ function hasMobileNumber(req, res, next) {
 
 // Verify dishes exists, isn't empty, and is an array
 function hasDishes(req, res, next) {
-    
+
 } 
 
 // CRUDLE Functions
@@ -47,6 +54,6 @@ function list(req, res) {
 }
 
 module.exports = {
-    create,
+    create: [hasDeliverTo, create],
     list,
 }
