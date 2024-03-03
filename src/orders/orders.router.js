@@ -3,7 +3,10 @@ const methodNotAllowed = require("../errors/methodNotAllowed");
 const controller = require("./orders.controller")
 // TODO: Implement the /orders routes needed to make the tests pass
 
-// New route for /
+//New route for "/:orderId"
+router.route("/:orderId")
+
+// New route for "/"
 router.route("/")
 .get(controller.list)
 .post(controller.create)
