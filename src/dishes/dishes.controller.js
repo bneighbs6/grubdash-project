@@ -12,25 +12,39 @@ const nextId = require("../utils/nextId");
 // Verify name exists and isn't empty
 function hasName (req, res, next) {
     const { data: { name } = {} } = req.body;
-    if (!name || name === "") {
+    if (!name) {
         next({
             status: 400,
             message: "Dish must include a name"
         })
     }
+    // This line passes the name data to the locals body for next midware/error handler to handle
     res.locals.body = name; 
     return next()
 }
 
 // Verify Description exists and isn't empty
 function hasDescription(req, res, next) {
-
+    const { data: { description } = {} } = req.body; 
+    if (!description) {
+        next({
+            status: 400,
+            message: "Dish must include a description"
+        });
+    }
+    return next();
 }
 
-// Verify price exists and isn't empty
+/* // Verify price exists and isn't empty
 function hasPrice(req, res, next) {
-
-}
+    const { data: { price } = {} } = req.body; 
+    if (!price) {
+        next({
+            status: 400,
+            message: "Dish must include a price"
+        });
+    }
+} */
 
 // Verify image_url exists and isn't empty
 function hasImage(req, res, next) {
@@ -57,6 +71,6 @@ function list(req, res) {
 }
 
 module.exports = {
-    create: [hasName, create],
+    create: [hasName, hasDescription, create],
     list, 
 }
