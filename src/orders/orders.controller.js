@@ -34,9 +34,9 @@ function hasMobileNumber(req, res, next) {
     return next(); 
 }
 
-// Verify dishes exists, isn't empty, and is an array
+/* // Verify dishes exists, isn't empty, and is an array
 function hasDishes(req, res, next) {
-    const { data: { dishes } = [] } = req.body;
+    const { data: { dishes } = {} } = req.body;
     if (!dishes || !dishes.length || !Array.isArray(dishes)) {
         next({
             status: 400,
@@ -44,7 +44,36 @@ function hasDishes(req, res, next) {
         });
     }
     return next(); 
-} 
+/* }  */
+
+// Look up reduce method for reducing dishes array to those with improper quantity values
+function dishesHasQuantity(req, res, next) {
+    const { data: { dishes } = {} } = req.body;
+    // Checks if dishes array exists and is not empty
+    if (!dishes || !dishes.length || !Array.isArray(dishes)) {
+        next({
+            status: 400,
+            message: "Order must include at least one dish"
+        });
+    }
+    // Defines invalidDishes array
+    // Filters dishes that do not exist, or are less than 0
+    const invalidDishes = dishes.filter((dish) => {
+        if (!dish.quantity || dish.quantity < 0 || !Number.isInteger(dish.quantity)) {
+            return true; 
+        }
+        return false; 
+    });
+    // If invalidDishes array contains ANY length, return error status & message
+    if (invalidDishes.length > 0) {
+        return next({
+            status: 400,
+            message: `dish ${index} must have a quantity that is an integer greater than 0`
+        })
+    }
+    // IF invalidDishes array is empty, it moves on to next middleware fx
+    return next(); 
+}
 
 // Validates status is pending
 // Used with destroy();
@@ -114,7 +143,7 @@ function list(req, res) {
 }
 
 module.exports = {
-    create: [hasDeliverTo, hasMobileNumber, hasDishes, create],
+    create: [hasDeliverTo, hasMobileNumber, dishesHasQuantity, create],
     read: [orderExists, read],
     delete: [orderExists, hasValidStatus, destroy],
     list,
