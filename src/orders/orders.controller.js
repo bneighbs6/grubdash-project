@@ -36,7 +36,14 @@ function hasMobileNumber(req, res, next) {
 
 // Verify dishes exists, isn't empty, and is an array
 function hasDishes(req, res, next) {
-
+    const { data: { dishes } = [] } = req.body;
+    if (!dishes) {
+        next({
+            status: 400,
+            message: "Order must include at least one dish"
+        });
+    }
+    return next(); 
 } 
 
 // CRUDLE Functions
@@ -61,6 +68,6 @@ function list(req, res) {
 }
 
 module.exports = {
-    create: [hasDeliverTo, hasMobileNumber, create],
+    create: [hasDeliverTo, hasMobileNumber, hasDishes, create],
     list,
 }
