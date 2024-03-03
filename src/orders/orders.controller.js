@@ -46,6 +46,8 @@ function hasDishes(req, res, next) {
     return next(); 
 } 
 
+// Validates status is pending
+// Used with destroy();
 function hasValidStatus(req, res, next) {
     const { orderId } = req.params;
     const foundOrder = orders.find((order) => order.id === orderId);
