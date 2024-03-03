@@ -24,7 +24,14 @@ function hasDeliverTo(req, res, next) {
 
 // Verify mobile number exists and isn't empty
 function hasMobileNumber(req, res, next) {
-
+    const { data: { mobileNumber } = {} } = req.body; 
+    if (!mobileNumber) {
+        next({
+            status: 400,
+            message: "Order must include a mobileNumber"
+        });
+    }
+    return next(); 
 }
 
 // Verify dishes exists, isn't empty, and is an array
@@ -54,6 +61,6 @@ function list(req, res) {
 }
 
 module.exports = {
-    create: [hasDeliverTo, create],
+    create: [hasDeliverTo, hasMobileNumber, create],
     list,
 }
