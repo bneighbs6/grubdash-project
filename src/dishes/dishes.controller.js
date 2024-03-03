@@ -57,6 +57,20 @@ function hasImage(req, res, next) {
     return next(); 
 }
 
+// Verify if dish exists
+function dishExists(req, res, next) {
+    const {dishId} = req.params; 
+    const foundDish = dishes.find((dish) => dish.id === dishId);
+    if (foundDish) {
+        res.locals.dish = foundDish;
+        return next();
+    }
+    next({
+        status: 404,
+        message: `No matching dish for id: ${dishId}`,
+    })
+}
+
 // CRUDL Functions
 
 // Creates a new dish
@@ -73,6 +87,11 @@ function create(req, res) {
     res.status(201).json({ data: newDish });
 }
 
+// Reads data from a GET request to "/:dishId"
+function read(req, res) {
+    res.json({ data: res.locals.dish })
+}
+
 // Lists the dishes data
 function list(req, res) {
     res.json({ data: dishes });
@@ -80,5 +99,6 @@ function list(req, res) {
 
 module.exports = {
     create: [hasName, hasDescription, hasPrice, hasImage, create],
+    read: [dishExists, read],
     list, 
 }
