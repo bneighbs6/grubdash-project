@@ -35,7 +35,7 @@ function hasDescription(req, res, next) {
     return next();
 }
 
-/* // Verify price exists and isn't empty
+// Verify price exists and isn't empty
 function hasPrice(req, res, next) {
     const { data: { price } = {} } = req.body; 
     if (!price) {
@@ -44,7 +44,8 @@ function hasPrice(req, res, next) {
             message: "Dish must include a price"
         });
     }
-} */
+    return next(); 
+}
 
 // Verify image_url exists and isn't empty
 function hasImage(req, res, next) {
@@ -71,6 +72,6 @@ function list(req, res) {
 }
 
 module.exports = {
-    create: [hasName, hasDescription, create],
+    create: [hasName, hasDescription, hasPrice, create],
     list, 
 }
