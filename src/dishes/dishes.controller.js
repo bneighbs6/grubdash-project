@@ -11,7 +11,15 @@ const nextId = require("../utils/nextId");
 // Middleware Functions
 // Verify name exists and isn't empty
 function hasName (req, res, next) {
-
+    const { data: { name } = {} } = req.body;
+    if (!name || name === "") {
+        next({
+            status: 400,
+            message: "Dish must include a name"
+        })
+    }
+    res.locals.body = name; 
+    return next()
 }
 
 // Verify Description exists and isn't empty
@@ -26,7 +34,7 @@ function hasPrice(req, res, next) {
 
 // Verify image_url exists and isn't empty
 function hasImage(req, res, next) {
-    
+
 }
 
 // CRUDL Functions
@@ -49,6 +57,6 @@ function list(req, res) {
 }
 
 module.exports = {
-    create,
+    create: [hasName, create],
     list, 
 }
