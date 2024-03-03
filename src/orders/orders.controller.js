@@ -46,6 +46,21 @@ function hasDishes(req, res, next) {
     return next(); 
 } 
 
+// Verifies order exists
+function orderExists(req, res, next) {
+    const { orderId } = req.params;
+    const foundOrder = orders.find((order) => order.id === orderId);
+  
+    if (foundOrder) {
+      res.locals.order = foundOrder;
+      return next();
+    }
+    next({
+      status: 404,
+      message: `No matching order is found for orderId ${orderId}.`,
+    });
+  }
+
 // CRUDLE Functions
 
 // Creates a new order and adds to orders array
@@ -62,6 +77,10 @@ function create(req, res) {
     res.status(201).json({ data: newOrder });
 }
 
+function read(req, res) {
+    res.json({ data: res.locals.order });
+  }
+
 // Lists the orders data
 function list(req, res) {
     res.json({ data: orders });
@@ -69,5 +88,6 @@ function list(req, res) {
 
 module.exports = {
     create: [hasDeliverTo, hasMobileNumber, hasDishes, create],
+    read: [orderExists, read],
     list,
 }
