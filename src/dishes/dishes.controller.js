@@ -36,7 +36,7 @@ function hasDescription(req, res, next) {
 // Verify price exists and isn't empty
 function hasPrice(req, res, next) {
     const { data: { price } = {} } = req.body; 
-    if (!price || price < 0) {
+    if (!price || price < 0 || !Number.isInteger(price)) {
         next({
             status: 400,
             message: "Dish must include a price"
@@ -55,6 +55,21 @@ function hasImage(req, res, next) {
         });
     }
     return next(); 
+}
+
+function hasIdMatchRouteId(req, res, next) {
+    const { dishId } = req.params; 
+    const { data: { id } = {} } = req.body;
+    if (dishId) {
+        if (id === dishId) {
+            return next();
+        }
+        next({
+            status: 400,
+            message: `Dish id does not match Route id. Dish: ${id}, Route: ${dishId}`,
+        })
+    }
+    return next();
 }
 
 // Verify if dish exists
@@ -116,6 +131,6 @@ function list(req, res) {
 module.exports = {
     create: [hasName, hasDescription, hasPrice, hasImage, create],
     read: [dishExists, read],
-    update: [dishExists, hasName, hasDescription, hasImage, hasPrice, update],
+    update: [dishExists, hasName, hasDescription, hasPrice, hasImage, hasIdMatchRouteId, update],
     list, 
 }
