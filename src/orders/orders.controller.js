@@ -48,7 +48,7 @@ function hasDishes(req, res, next) {
 
 function dishesHasQuantity(req, res, next) {
     const { data: { dishes } = {} } = req.body;
-    
+    // Loop through dishes array
     for (let i = 0; i < dishes.length; i++) {
         const dish = dishes[i];
 
@@ -71,22 +71,42 @@ function dishesHasQuantity(req, res, next) {
     // If no invalid dish found, move to next middleware
     return next();
 }
-// I need to update hasValidStatus to be orderStatusIsPending
-// Then create hasValidStatus to check is status is anything but delivered
+
+// create hasValidStatus to check is status is anything but delivered
+function hasValidStatus(req, res, next) {
+    const { orderId } = req.params; 
+    const foundOrder = orders.find((order) => order.id === orderId);
+    if (!foundOrder.status || foundOrder.status === "invalid") {
+        return next({
+            status: 400,
+            message: "Order must have a status of pending, preparing, out-for-delivery, or delivered."
+        });
+    }
+    return next(); 
+}
 
 // Validates status is pending
 // Used with destroy();
-function hasValidStatus(req, res, next) {
+function orderIsPending(req, res, next) {
     const { orderId } = req.params;
     const foundOrder = orders.find((order) => order.id === orderId);
-    if (foundOrder.status === "pending") {
-        return next();
+  
+    if (!foundOrder) {
+      return next({
+        status: 404,
+        message: "The order with the given id was not found. Returns a 404 status code",
+      });
     }
-    next({
-        status: 400,
-        message: "An order cannot be deleted unless it is pending. Returns a 400 status code"
-    })
-}
+  
+    if (foundOrder.status === "pending") {
+      return next();
+    }
+  
+    return next({
+      status: 400,
+      message: "An order cannot be deleted unless it is pending. Returns a 400 status code",
+    });
+  }
 
 function hasIdMatchRouteId(req, res, next) {
     // Define parameter and request body
@@ -94,7 +114,7 @@ function hasIdMatchRouteId(req, res, next) {
     const { data: { id } = {} } = req.body;
     // if id exists, then check if id match dishId
     if (id) {
-    // if id matches dishId, return next, otherwish throw error status and message    
+    // if id matches dishId, return next, otherwise throw error status and message    
         if (id === orderId) {
             return next();
         }
@@ -175,10 +195,11 @@ function list(req, res) {
     res.json({ data: orders });
 }
 
+// Updates export needs a hasValidStatus validation midware function with it
 module.exports = {
     create: [hasDeliverTo, hasMobileNumber, hasDishes, dishesHasQuantity, create],
     read: [orderExists, read],
-    update: [orderExists, hasDeliverTo, hasMobileNumber, hasDishes, dishesHasQuantity, hasIdMatchRouteId, update],
-    delete: [orderExists, hasValidStatus, destroy],
+    update: [orderExists, hasDeliverTo, hasMobileNumber, hasDishes, dishesHasQuantity, orderIsPending, hasValidStatus, hasIdMatchRouteId, update],
+    delete: [orderExists, orderIsPending, destroy],
     list,
 }
