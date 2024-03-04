@@ -61,7 +61,7 @@ function dishesHasQuantity(req, res, next) {
         }
 
         // Checks if 'quantity' property is not an inter or is less than 0
-        if (!Number.isInteger(dish.quantity) || dish.quantity < 0) {
+        if (!Number.isInteger(dish.quantity) || dish.quantity <= 0) {
             return next({
                 status: 400,
                 message: `dish ${i} must have a quantity that is an integer greater than 0`,
@@ -71,6 +71,8 @@ function dishesHasQuantity(req, res, next) {
     // If no invalid dish found, move to next middleware
     return next();
 }
+// I need to update hasValidStatus to be orderStatusIsPending
+// Then create hasValidStatus to check is status is anything but delivered
 
 // Validates status is pending
 // Used with destroy();
