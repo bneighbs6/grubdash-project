@@ -86,6 +86,24 @@ function hasValidStatus(req, res, next) {
     })
 }
 
+function hasIdMatchRouteId(req, res, next) {
+    // Define parameter and request body
+    const { orderId } = req.params; 
+    const { data: { id } = {} } = req.body;
+    // if id exists, then check if id match dishId
+    if (id) {
+    // if id matches dishId, return next, otherwish throw error status and message    
+        if (id === orderId) {
+            return next();
+        }
+        next({
+            status: 400,
+            message: `Dish id does not match Route id. Dish: ${id}, Route: ${orderId}`,
+        })
+    }
+    return next();
+}
+
 // Verifies order exists
 function orderExists(req, res, next) {
     const { orderId } = req.params;
