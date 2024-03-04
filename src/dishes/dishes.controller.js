@@ -92,6 +92,22 @@ function read(req, res) {
     res.json({ data: res.locals.dish })
 }
 
+// Updates the dish with a PUT request to "/:dishId"
+function update(req, res) {
+    const dish = res.locals.dish;
+    const { data: { id, name, description, price, image_url } = {} } = req.body;
+
+    // Update the dish 
+    dish.id = id;
+    dish.name = name;
+    dish.description = description;
+    dish.price = price;
+    dish.image_url = image_url; 
+
+    // Respond with json data of updated dish
+    res.json({ data: dish });
+}
+
 // Lists the dishes data
 function list(req, res) {
     res.json({ data: dishes });
@@ -100,5 +116,6 @@ function list(req, res) {
 module.exports = {
     create: [hasName, hasDescription, hasPrice, hasImage, create],
     read: [dishExists, read],
+    update: [dishExists, update],
     list, 
 }
