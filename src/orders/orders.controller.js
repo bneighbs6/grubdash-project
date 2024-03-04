@@ -72,17 +72,26 @@ function dishesHasQuantity(req, res, next) {
     return next();
 }
 
-// create hasValidStatus to check is status is anything but delivered
+
+// create hasValidStatus to check if status is anything but delivered
 function hasValidStatus(req, res, next) {
-    const { orderId } = req.params; 
-    const foundOrder = orders.find((order) => order.id === orderId);
-    if (!foundOrder.status || foundOrder.status === "" || foundOrder.status === "invalid") {
+    const { data: { status } = {} } = req.body;
+
+    // If status is not provided, move to the next middleware
+    if (!status) {
+        return next();
+    }
+
+    // Check if the status is valid
+    const validStatuses = ["pending", "preparing", "out-for-delivery", "delivered"];
+    if (!validStatuses.includes(status)) {
         return next({
             status: 400,
             message: "Order must have a status of pending, preparing, out-for-delivery, or delivered."
         });
     }
-    return next(); 
+
+    return next();
 }
 
 // Validates status is pending
@@ -158,19 +167,27 @@ function read(req, res) {
   }
 
 // Updates an order w/ PUT request to "/:orderId"
-function update(req, res) {
+function update(req, res, next) {
     const order = res.locals.order;
-    const { data: { id, deliverTo, mobileNumber, status, dishes } = {} } = req.body; 
+    const { data: { id, deliverTo, mobileNumber, status, dishes } = {} } = req.body;
+
+    // Add validation for status
+    if (status === undefined || status === null || status === "") {
+        return next({
+            status: 400,
+            message: "Order must have a status of pending, preparing, out-for-delivery, or delivered."
+        });
+    }
 
     // Update the order
-    order.id,
-    order.deliverTo = deliverTo; 
+    order.id, // id doesn't have to be updated
+    order.deliverTo = deliverTo;
     order.mobileNumber = mobileNumber;
-    order.status = status; 
-    order.dishes = dishes; 
+    order.status = status;
+    order.dishes = dishes;
 
-    // Respond with json data of new order
-    res.json({ data: order })
+    // Respond with json data of the updated order
+    res.json({ data: order });
 }
 
 // Deletes an order
