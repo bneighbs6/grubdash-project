@@ -124,6 +124,22 @@ function read(req, res) {
     res.json({ data: res.locals.order });
   }
 
+// Updates an order w/ PUT request to "/:orderId"
+function update(req, res) {
+    const order = res.locals.order;
+    const { data: { id, deliverTo, mobileNumber, status, dishes } = {} } = req.body; 
+
+    // Update the order
+    order.id = id;
+    order.deliverTo = deliverTo; 
+    order.mobileNumber = mobileNumber;
+    order.status = status; 
+    order.dishes = dishes; 
+
+    // Respond with json data of new order
+    res.json({ data: order })
+}
+
 // Deletes an order
 // Ran with DELETE request
 function destroy(req, res) {
@@ -142,6 +158,7 @@ function list(req, res) {
 module.exports = {
     create: [hasDeliverTo, hasMobileNumber, hasDishes, dishesHasQuantity, create],
     read: [orderExists, read],
+    update: [orderExists, update],
     delete: [orderExists, hasValidStatus, destroy],
     list,
 }
