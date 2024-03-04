@@ -90,18 +90,11 @@ function hasValidStatus(req, res, next) {
 function orderIsPending(req, res, next) {
     const { orderId } = req.params;
     const foundOrder = orders.find((order) => order.id === orderId);
-  
-    if (!foundOrder) {
-      return next({
-        status: 404,
-        message: "The order with the given id was not found. Returns a 404 status code",
-      });
-    }
-  
+  // If status is pending, go to next middleware 
     if (foundOrder.status === "pending") {
       return next();
     }
-  
+  // If status !== pending, return this next error
     return next({
       status: 400,
       message: "An order cannot be deleted unless it is pending. Returns a 400 status code",
@@ -112,15 +105,15 @@ function hasIdMatchRouteId(req, res, next) {
     // Define parameter and request body
     const { orderId } = req.params; 
     const { data: { id } = {} } = req.body;
-    // if id exists, then check if id match dishId
+    // if id exists, then check if id match orderId
     if (id) {
-    // if id matches dishId, return next, otherwise throw error status and message    
+    // if id matches orderId, return next, otherwise throw error status and message    
         if (id === orderId) {
             return next();
         }
         next({
             status: 400,
-            message: `Dish id does not match Route id. Dish: ${id}, Route: ${orderId}`,
+            message: `Order id does not match Route id. Order: ${id}, Route: ${orderId}`,
         })
     }
     return next();
