@@ -60,7 +60,7 @@ function hasImage(req, res, next) {
 function hasIdMatchRouteId(req, res, next) {
     const { dishId } = req.params; 
     const { data: { id } = {} } = req.body;
-    if (dishId) {
+    if (id) {
         if (id === dishId) {
             return next();
         }
