@@ -48,7 +48,7 @@ function hasDishes(req, res, next) {
 
 function dishesHasQuantity(req, res, next) {
     const { data: { dishes } = {} } = req.body;
-
+    
     // Defines invalidDishes array
     // Filters dishes that do not exist, or are less than 0
     const invalidDishes = dishes.filter((dish, index) => {
@@ -176,7 +176,7 @@ function list(req, res) {
 module.exports = {
     create: [hasDeliverTo, hasMobileNumber, hasDishes, dishesHasQuantity, create],
     read: [orderExists, read],
-    update: [orderExists, update],
+    update: [orderExists, hasDeliverTo, hasMobileNumber, hasDishes, dishesHasQuantity, hasIdMatchRouteId, update],
     delete: [orderExists, hasValidStatus, destroy],
     list,
 }
