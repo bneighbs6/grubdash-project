@@ -163,7 +163,7 @@ function update(req, res) {
     const { data: { id, deliverTo, mobileNumber, status, dishes } = {} } = req.body; 
 
     // Update the order
-    order.id = id;
+    order.id,
     order.deliverTo = deliverTo; 
     order.mobileNumber = mobileNumber;
     order.status = status; 
