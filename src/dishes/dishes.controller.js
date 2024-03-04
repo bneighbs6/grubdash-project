@@ -58,9 +58,12 @@ function hasImage(req, res, next) {
 }
 
 function hasIdMatchRouteId(req, res, next) {
+    // Define parameter and request body
     const { dishId } = req.params; 
     const { data: { id } = {} } = req.body;
+    // if id exists, then check if id match dishId
     if (id) {
+    // if id matches dishId, return next, otherwish throw error status and message    
         if (id === dishId) {
             return next();
         }
